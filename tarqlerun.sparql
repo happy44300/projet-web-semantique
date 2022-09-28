@@ -1,12 +1,26 @@
-@prefix foaf <http://exemple/foaf>
-@prefix object <http://exemple/object>
-
+PREFIX ex: <http://ex.org/a#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
   CONSTRUCT {
-  ?URI a ex:Organization;
-	ex:name ?NameWithLang;
-	ex:CIK ?CIK;
-	ex:LEI ?LEI;
-	ex:ticker ?Stock_ticker;
+	?ReviewURI a ex:Review;
+	ex:product_title ?title;
+	ex:product_category ?category;
+	ex:star_rating ?stars;
+	ex:helpful_votes ?votes;
+	ex:total_votes ?totalVotes;
+	ex:review_headline ?headline;
+	ex:review_body ?body;
+	ex:review_date ?date;
   }
-  FROM <file:companies.csv>
+  FROM <file:review_sample.csv>
+   WHERE {
+    BIND (IRI(CONCAT("http://ex.org/reviews/", ?product_title)) AS ?ReviewURI)
+	BIND (STRLANG(?marketplaceTag, "FR") AS ?marketplaceCode)
+	BIND (xsd:string(?product_category) AS ?categrory)
+    BIND (xsd:integer(?star_rating) AS ?stars)
+	BIND (xsd:integer(?total_votes) AS ?votes)
+	BIND (xsd:integer(?numTotalVote) AS ?totalVotes)
+	BIND (xsd:string(?review_headline) AS ?headline)
+	BIND (xsd:string(?review_body) AS ?body)
+	BIND (xsd:dateTime(?review_date) AS ?date)
+  }
