@@ -3,6 +3,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
   CONSTRUCT {
 	?ReviewURI a ex:Review;
+	ex:marketplace ?marketplaceCode;
 	ex:product_title ?title;
 	ex:product_category ?category;
 	ex:star_rating ?stars;
@@ -15,12 +16,12 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   FROM <file:review_sample.csv>
    WHERE {
     BIND (IRI(CONCAT("http://ex.org/reviews/", ?product_title)) AS ?ReviewURI)
-	BIND (STRLANG(?marketplaceTag, "FR") AS ?marketplaceCode)
-	BIND (xsd:string(?product_category) AS ?categrory)
+	BIND (xsd:string(?marketplace) AS ?marketplaceCode)
+	BIND (xsd:string(?product_category) AS ?category)
     BIND (xsd:integer(?star_rating) AS ?stars)
-	BIND (xsd:integer(?total_votes) AS ?votes)
-	BIND (xsd:integer(?numTotalVote) AS ?totalVotes)
+	BIND (xsd:integer(?helpful_votes) AS ?votes)
+	BIND (xsd:integer(?total_votes) AS ?totalVotes)
 	BIND (xsd:string(?review_headline) AS ?headline)
 	BIND (xsd:string(?review_body) AS ?body)
-	BIND (xsd:dateTime(?review_date) AS ?date)
+	BIND (xsd:date(?review_date) AS ?date)
   }

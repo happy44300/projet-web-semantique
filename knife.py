@@ -20,11 +20,16 @@ sample = sample.drop("verified_purchase",  axis=1)
 sample["product_title"] = sample["product_title"].apply(clear_url)
 
 sample["product_title"].str.encode('ascii', 'ignore').str.decode('ascii')
+
+for collumn in sample:
+    if sample[str(collumn)].dtypes == "object":
+        print(collumn)
+        sample[str(collumn)].str.encode('ascii', 'ignore').str.decode('ascii')
+
+
 sample["review_headline"].str.encode('ascii', 'ignore').str.decode('ascii')
 sample["review_body"].str.encode('ascii', 'ignore').str.decode('ascii')
 
-
-print(sample)
-
+print(sample.columns)
 
 sample.to_csv("review_sample.csv", index=False, encoding="utf-8")
