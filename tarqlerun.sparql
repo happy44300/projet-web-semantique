@@ -1,21 +1,29 @@
-PREFIX ex: <http://ex.org/a#>
+PREFIX ex: <http://exemple.org/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
   CONSTRUCT {
-	?ReviewURI a ex:Review;
+	?ReviewURI rdf:type ex:Review;
 	ex:marketplace ?marketplaceCode;
-	ex:product_title ?title;
-	ex:product_category ?category;
 	ex:star_rating ?stars;
 	ex:helpful_votes ?votes;
 	ex:total_votes ?totalVotes;
 	ex:review_headline ?headline;
 	ex:review_body ?body;
-	ex:review_date ?date;
+	ex:review_date ?date.
+	
+	?ProductURI rdf:type schema:Product;
+	schema:name ?name;
+	schema:category ?category;
+	schema:review ?ReviewURI.
   }
   FROM <file:review_sample.csv>
    WHERE {
-    BIND (IRI(CONCAT("http://ex.org/reviews/", ?product_title)) AS ?ReviewURI)
+    BIND (IRI(CONCAT("http://exemple.org/review/", ?review_id)) AS ?ReviewURI)
+	BIND (IRI(CONCAT("http://exemple.org/product/", ?product_id)) AS ?ProductURI)
+	BIND (xsd:string(?product_title) AS ?name)	
+	
 	BIND (xsd:string(?marketplace) AS ?marketplaceCode)
 	BIND (xsd:string(?product_category) AS ?category)
     BIND (xsd:integer(?star_rating) AS ?stars)
