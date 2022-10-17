@@ -4,7 +4,7 @@ import urllib.parse
 
 chunk = pd.read_csv("amazon_reviews_multilingual_FR_v1_00.tsv", sep="\t", encoding="utf-8")
 
-sample = chunk.sample(1)
+sample = chunk.sample(10000)
 
 sample = sample.drop("customer_id",  axis=1)
 sample = sample.drop("product_parent",  axis=1)
