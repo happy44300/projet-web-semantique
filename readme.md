@@ -16,7 +16,9 @@ Objectives:
 
 [**Original dataset**](Link to the index](https://s3.amazonaws.com/amazon-reviews-pds/tsv/index.txt)): Amazon product reviews in uk, france, japan, germany, us
 
-You can use the download.bat file in ./dataset to download all the dataset (total size about 2gb)
+You can use the download.bat file in ./dataset to download all the dataset (total size about 2gb).
+
+We have 1705837 triples for a flat size of about 3gb.
 
 In order to handle a smaller (more manageable) dataset, a python script [knife.py](https://github.com/happy44300/projet-web-semantique/blob/main/knife.py) 
 was created in the dataset folder. It was used to take a sample of the original dataset and to remove some columns: product_parent, customer_id, vine, verified_purchase
