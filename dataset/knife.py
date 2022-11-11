@@ -1,39 +1,70 @@
 import pandas as pd
+import re
+
+countries = {
+    "FR": "France",
+    "UK": "United_Kingdom_of_Great_Britain_and_Northern_Ireland",
+    "JP": "Japan",
+    "DE": "Germany",
+    "US": "United_States"
+}
+
+
+def replace(strToMatch, replaceWith, input):
+    if strToMatch == input:
+        return replaceWith
+    else:
+        return input
+
 
 dataset_dir = "./data/"
 
-chunk = pd.read_csv(dataset_dir + "amazon_reviews_multilingual_UK_v1_00.tsv.gz", compression='gzip', sep="\t",
-                    encoding="utf-8", on_bad_lines='warn')
-pd.read_csv(dataset_dir + "amazon_reviews_multilingual_FR_v1_00.tsv.gz", compression='gzip', sep="\t", encoding="utf-8",
-            on_bad_lines='warn')
-pd.read_csv(dataset_dir + "amazon_reviews_multilingual_JP_v1_00.tsv.gz", compression='gzip', sep="\t", encoding="utf-8",
-            on_bad_lines='warn')
-pd.read_csv(dataset_dir + "amazon_reviews_multilingual_DE_v1_00.tsv.gz", compression='gzip', sep="\t", encoding="utf-8",
-            on_bad_lines='warn')
-pd.read_csv(dataset_dir + "amazon_reviews_multilingual_US_v1_00.tsv.gz", compression='gzip', sep="\t", encoding="utf-8",
-            on_bad_lines='warn')
+df_uk = pd.read_csv(dataset_dir + "amazon_reviews_multilingual_UK_v1_00.tsv.gz", compression='gzip', sep="\t",
+                    encoding="utf-8",
+                    on_bad_lines='warn')
 
-nb_row = chunk.shape[0]
-print(nb_row)
+df_jp = pd.read_csv(dataset_dir + "amazon_reviews_multilingual_JP_v1_00.tsv.gz", compression='gzip', sep="\t",
+                    encoding="utf-8",
+                    on_bad_lines='warn')
+df_de = pd.read_csv(dataset_dir + "amazon_reviews_multilingual_DE_v1_00.tsv.gz", compression='gzip', sep="\t",
+                    encoding="utf-8",
+                    on_bad_lines='warn')
 
-for i in {nb_row, 500000, 100000, 50000, 10000}:
+df_us = pd.read_csv(dataset_dir + "amazon_reviews_multilingual_US_v1_00.tsv.gz", compression='gzip', sep="\t",
+                    encoding="utf-8",
+                    on_bad_lines='warn')
 
-    sample = chunk.sample(i)
+df_fr = pd.read_csv(dataset_dir + "amazon_reviews_multilingual_FR_v1_00.tsv.gz", compression='gzip', sep="\t",
+                    encoding="utf-8",
+                    on_bad_lines='warn')
 
-    sample = sample.drop("customer_id", axis=1)
-    sample = sample.drop("product_parent", axis=1)
-    sample = sample.drop("vine", axis=1)
-    sample = sample.drop("verified_purchase", axis=1)
+dataframe = [df_uk, df_jp, df_us, df_de, df_fr]
 
-    sample["product_title"].str.encode('ascii', 'ignore').str.decode('ascii')
+nb_row = 0
 
-    for collumn in sample:
-        if sample[str(collumn)].dtypes == "object":
-            sample[str(collumn)].str.encode('ascii', 'ignore').str.decode('ascii')
+for i in range(len(dataframe)):
 
-    sample["review_headline"].str.encode('ascii', 'ignore').str.decode('ascii')
-    sample["review_body"].str.encode('ascii', 'ignore').str.decode('ascii')
+    dataframe[i] = dataframe[i].drop("customer_id", axis=1)
+    dataframe[i] = dataframe[i].drop("product_parent", axis=1)
+    dataframe[i] = dataframe[i].drop("vine", axis=1)
+    dataframe[i] = dataframe[i].drop("verified_purchase", axis=1)
+    dataframe[i] = dataframe[i].drop("review_body", axis=1)
 
-    print(sample)
+    nb_row += dataframe[i].shape[0]
 
-    sample.to_csv(str(i) + "_review_sample.csv", index=False, encoding="utf-8")
+    for countryCode in countries.keys():
+        dataframe[i]["marketplace"] = dataframe[i]["marketplace"].apply(lambda x: replace(countryCode, countries.get(countryCode), x))
+
+print("total triples:" + str(nb_row))
+
+for i in {200000, 100000, 10000, 1000}:
+    totalTriples = i * len(dataframe)
+
+    sample = None
+
+    for _df in dataframe:
+        sample = pd.concat([sample, _df.sample(i)])
+
+    file_name = str(totalTriples) + "_review_sample.csv"
+    print("saving: " + file_name)
+    sample.to_csv(file_name, index=False, encoding="utf-8")
