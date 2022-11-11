@@ -1,0 +1,11 @@
+PREFIX dbp: <http://dbpedia.org/property/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+  ?Player_iri a dbo:SoccerPlayer;
+}
+FROM <file:table_2.csv> 
+WHERE {
+  BIND (IRI(?Player) AS ?Player_iri)
+}

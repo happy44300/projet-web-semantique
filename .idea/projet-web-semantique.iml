@@ -12,6 +12,8 @@
       <excludeFolder url="file://$MODULE_DIR$/apache-jena-4.6.1/lib" />
       <excludeFolder url="file://$MODULE_DIR$/apache-jena-4.6.1/lib-src" />
       <excludeFolder url="file://$MODULE_DIR$/apache-jena-4.6.1/src-examples" />
+      <excludeFolder url="file://$MODULE_DIR$/apache-jena-4.6.1/apache-jena-fuseki-4.6.1" />
+      <excludeFolder url="file://$MODULE_DIR$/dataset" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
