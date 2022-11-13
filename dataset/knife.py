@@ -1,3 +1,5 @@
+import sys
+
 import pandas as pd
 import re
 
@@ -57,14 +59,17 @@ for i in range(len(dataframe)):
 
 print("total triples:" + str(nb_row))
 
-for i in {200000, 100000, 10000, 1000}:
+for i in {sys.maxsize}:
     totalTriples = i * len(dataframe)
 
     sample = None
 
     for _df in dataframe:
-        sample = pd.concat([sample, _df.sample(i)])
+        if i < _df.shape[0]:
+            sample = pd.concat([sample, _df.sample(i)])
+        else:
+            sample = pd.concat([sample, _df])
 
-    file_name = str(totalTriples) + "_review_sample.csv"
+    file_name = str(totalTriples) + "_review_sample_light.csv"
     print("saving: " + file_name)
     sample.to_csv(file_name, index=False, encoding="utf-8")

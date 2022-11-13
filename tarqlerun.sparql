@@ -8,12 +8,13 @@ PREFIX dbr: <https://dbpedia.org/resource/>
   CONSTRUCT {
 	?ReviewURI rdf:type ex:Review;
 	dbo:Country ?marketplaceCountry;
-	ex:star_rating ?stars;
+	schema:ratingValue ?stars;
+	
 	ex:helpful_votes ?votes;
 	ex:total_votes ?totalVotes;
-	ex:review_headline ?headline;
-	ex:review_body ?body;
-	dbo:Date ?date.
+	schema:headline ?headline;
+	schema:reviewBody ?body;
+	schema:datePublished ?date.
 	
 	?ProductURI rdf:type schema:Product;
 	schema:name ?name;
@@ -28,9 +29,9 @@ PREFIX dbr: <https://dbpedia.org/resource/>
 	
 	BIND (IRI(CONCAT("https://dbpedia.org/resource/", ?marketplace)) AS ?marketplaceCountry)
 	BIND (xsd:string(?product_category) AS ?category)
-    BIND (xsd:integer(?star_rating) AS ?stars)
-	BIND (xsd:integer(?helpful_votes) AS ?votes)
-	BIND (xsd:integer(?total_votes) AS ?totalVotes)
+    BIND ((?star_rating) AS ?stars)
+	BIND ((?helpful_votes) AS ?votes)
+	BIND ((?total_votes) AS ?totalVotes)
 	BIND (xsd:string(?review_headline) AS ?headline)
 	BIND (xsd:string(?review_body) AS ?body)
 	BIND (xsd:date(?review_date) AS ?date)
