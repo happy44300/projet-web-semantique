@@ -14,34 +14,39 @@ Objectives:
 
 ![](./img/graph.png)
 
-[**Original dataset**][Link to the index](https://s3.amazonaws.com/amazon-reviews-pds/tsv/index.txt)): Amazon product reviews in uk, france, japan, germany, us
+[**Original dataset index**](https://s3.amazonaws.com/amazon-reviews-pds/tsv/index.txt): Amazon product reviews in uk, france, japan, germany, us
+
+We have a little more than 10M triples in total.
 
 You can use the download.bat file in ./dataset to download all the dataset (total size about 2gb).
 
-We have about than 10M triples in total.
+We removed some columns from the original dataset: product_parent, customer_id, vine, verified_purchase, review_body.
+
+
+## Generating the graph
 
 In order to handle a smaller (more manageable) dataset, a python script [knife.py](https://github.com/happy44300/projet-web-semantique/blob/main/knife.py) 
-was created in the dataset folder. It was used to take a sample of the original dataset and to remove some columns: product_parent, customer_id, vine, verified_purchase
-To use it, simply execute the python file in the same folder as the original dataset (not renamed). Since it open all the dataset it might need more than 8gb of ram to execute (18gb in fact).
-It requires the pandas library.
+was created in the dataset folder.
 
-The samples created are called n_review_sample_csv where n is the number of review in the sample. 
-Example: [1_review_sample.csv](https://github.com/happy44300/projet-web-semantique/blob/main/review_sample.csv), has 1 review and 11 columns.
+To use it, simply execute the python file in the same folder as the original dataset (not renamed). Since it open all 
+the dataset it might need more than 8gb of ram to execute (18gb in fact).
+It requires the python pandas library.
 
+The samples created are called n_review_sample_light_csv where n is the number of review in the sample. We call them light
+because we removed the review_body column making the file drastically smaller.
 
 ## Transformation to RDF format (turtle)
 
 To transform this dataset into an RDF format, the tool tarql was used. The script [tarqlerun.sparql](https://github.com/happy44300/projet-web-semantique/blob/main/tarqlerun.sparql) is used with tarql and transforms the data of [review_sample.csv](https://github.com/happy44300/projet-web-semantique/blob/main/review_sample.csv) into an RDF format (turtle by default).
 
-Command to run our tarql script and save the results into a file (ntriples format):
+Command to run our tarql script and save the results into a file (ntriples format) from ./dataset folder:
 ```bash
-..\tarql-1.2\bin\tarql --ntriples --encoding "utf-8" ..\tarqlerun.sparql .\500000_review_sample.csv > 500000_review_sample.nt
-..\tarql-1.2\bin\tarql --ntriples --encoding "utf-8" ..\tarqlerun.sparql .\100000_review_sample.csv >100000_review_sample.nt
-..\tarql-1.2\bin\tarql --ntriples --encoding "utf-8" ..\tarqlerun.sparql .\50000_review_sample.csv >50000_review_sample.nt
-..\tarql-1.2\bin\tarql --ntriples --encoding "utf-8" ..\tarqlerun.sparql .\10000_review_sample.csv >10000_review_sample.nt
+..\tarql-1.2\bin\tarql --ntriples --encoding "utf-8" ..\tarqlerun.sparql ./25000_review_sample_light.csv > ./25000_review_sample_light.nt
 ```
 
-This results in the file [n_review_sample.ttl](https://github.com/happy44300/projet-web-semantique/blob/main/review_sample.ttl) containing the data of the sample, but in an RDF format (turtle). This file will be used as the RDF graph for the upcoming sparql requests.
+This results in the file [n_review_sample.ttl](https://github.com/happy44300/projet-web-semantique/blob/main/25000_review_sample_light.nt)
+containing the data of the sample, but in an RDF format (turtle). 
+This file is used as the RDF graph for the upcoming sparql requests.
 
 
 ## Group members

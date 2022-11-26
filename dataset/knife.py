@@ -59,7 +59,7 @@ for i in range(len(dataframe)):
 
 print("total triples:" + str(nb_row))
 
-for i in {10}:
+for i in {5000}:
     totalTriples = i * len(dataframe)
 
     sample = None
