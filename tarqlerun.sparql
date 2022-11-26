@@ -23,11 +23,7 @@ PREFIX dbr: <https://dbpedia.org/resource/>
   }
   FROM <file:review_sample.csv>
    WHERE {
-<<<<<<< HEAD
-    BIND (IRI(CONCAT("http://example.org/review/", ?review_id)) AS ?ReviewURI)
-=======
     BIND (IRI(CONCAT("http://example.org/Review/", ?review_id)) AS ?ReviewURI)
->>>>>>> bfd317afab5dbe20e093bbdcbfa09090b4f3499b
 	BIND (IRI(CONCAT("http://example.org/product/", ?product_id)) AS ?ProductURI)
 	BIND (xsd:string(?product_title) AS ?name)	
 	
