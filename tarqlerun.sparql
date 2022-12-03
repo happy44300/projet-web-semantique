@@ -15,9 +15,9 @@ PREFIX :        <#>
 CONSTRUCT {
 	:AmazonReviews rdf:type            void:Dataset;
 	               dcterms:title       ?title;
-				   dcterms:description ?description;
-				   dcterms:creator     ?creator;
-				   dcterms:created     ?created.
+	               dcterms:description ?description;
+	               dcterms:creator     ?creator;
+	               dcterms:created     ?created.
 }
 WHERE {
 	VALUES ?title { "Amazon product reviews" }
