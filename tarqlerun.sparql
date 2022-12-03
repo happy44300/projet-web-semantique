@@ -1,38 +1,88 @@
-PREFIX ex: <http://example.org/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX schema: <http://schema.org/>
-PREFIX rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dbo: <https://dbpedia.org/ontology/>
-PREFIX dbr: <https://dbpedia.org/resource/>
+PREFIX dbo:     <https://dbpedia.org/ontology/>
+PREFIX dbr:     <https://dbpedia.org/resource/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX ex:      <http://example.org/>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema:  <http://schema.org/>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX void:    <http://rdfs.org/ns/void#>
+PREFIX :        <#>
 
-  CONSTRUCT {
-	?ReviewURI rdf:type schema:Review;
-	dbo:Country ?marketplaceCountry;
-	schema:ratingValue ?stars;
-	
-	ex:helpful_votes ?votes;
-	schema:ratingCount ?totalVotes;
-	schema:headline ?headline;
-	schema:reviewBody ?body;
-	schema:datePublished ?date.
-	
-	?ProductURI rdf:type schema:Product;
-	schema:name ?name;
-	schema:category ?category;
-	schema:review ?ReviewURI.
-  }
-  FROM <file:review_sample.csv>
-   WHERE {
-    BIND (IRI(CONCAT("http://example.org/Review/", ?review_id)) AS ?ReviewURI)
-	BIND (IRI(CONCAT("http://example.org/product/", ?product_id)) AS ?ProductURI)
-	BIND (xsd:string(?product_title) AS ?name)	
-	
-	BIND (IRI(CONCAT("https://dbpedia.org/resource/", ?marketplace)) AS ?marketplaceCountry)
-	BIND (xsd:string(?product_category) AS ?category)
-    BIND ((?star_rating) AS ?stars)
-	BIND ((?helpful_votes) AS ?votes)
-	BIND ((?total_votes) AS ?totalVotes)
-	BIND (xsd:string(?review_headline) AS ?headline)
-	BIND (xsd:string(?review_body) AS ?body)
-	BIND (xsd:date(?review_date) AS ?date)
-  }
+####################
+# Dataset metadata #
+####################
+
+CONSTRUCT {
+	:AmazonReviews rdf:type            void:Dataset;
+	               dcterms:title       ?title;
+				   dcterms:description ?description;
+				   dcterms:creator     ?creator;
+				   dcterms:created     ?created.
+}
+WHERE {
+	VALUES ?title { "Amazon product reviews" }
+	VALUES ?description { "Amazon product reviews in UK, France, Japan, Germany and US." }
+	VALUES ?creator {
+		"Houda BOUFERIS"
+		"Malo LE RESTE"
+		"Adrien LESÉNÉCHAL"
+		"Bilal MOLLI"
+	}
+
+	BIND (NOW() AS ?created)
+}
+
+###################
+# Product triples #
+###################
+
+CONSTRUCT {
+	?ProductURI rdf:type        schema:Product;
+	            schema:name     ?name;
+	            schema:category ?category.
+}
+FROM <file:review_sample.csv>
+WHERE {
+	# Aggregate queries do not work since Tarql 1.1, so there is no direct way to filter out
+	# duplicated products. Using Tarql 1.0, this could be achieved by using the following aggregate
+	# query to encapsulate all bindings:
+
+	# SELECT ?ProductURI ?name ?category
+	# WHERE {
+		BIND (IRI(CONCAT("http://example.org/product/", ?product_id)) AS ?ProductURI)
+
+		BIND (xsd:string(?product_title)    AS ?name)
+		BIND (xsd:string(?product_category) AS ?category)
+	# }
+	# GROUP BY ?ProductURI ?name ?category
+}
+
+##################
+# Review triples #
+##################
+
+CONSTRUCT {
+	?ProductURI schema:review        ?ReviewURI.
+
+	?ReviewURI  rdf:type             schema:Review;
+	            dbo:Country          ?MarketplaceURI;
+	            schema:ratingValue   ?stars;
+	            ex:helpful_votes     ?votes;
+	            schema:ratingCount   ?totalVotes;
+	            schema:headline      ?headline;
+	            schema:reviewBody    ?body;
+	            schema:datePublished ?date.
+}
+FROM <file:review_sample.csv>
+WHERE {
+	BIND (IRI(CONCAT("http://example.org/product/",   ?product_id))  AS ?ProductURI)
+	BIND (IRI(CONCAT("http://example.org/review/",    ?review_id))   AS ?ReviewURI)
+	BIND (IRI(CONCAT("https://dbpedia.org/resource/", ?marketplace)) AS ?MarketplaceURI)
+
+	BIND (xsd:integer(?star_rating)     AS ?stars)
+	BIND (xsd:integer(?helpful_votes)   AS ?votes)
+	BIND (xsd:integer(?total_votes)     AS ?totalVotes)
+	BIND (xsd:string (?review_headline) AS ?headline)
+	BIND (xsd:string (?review_body)     AS ?body)
+	BIND (xsd:date   (?review_date)     AS ?date)
+}

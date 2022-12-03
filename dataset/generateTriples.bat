@@ -1,1 +1,1 @@
-..\tarql-1.2\bin\tarql --ntriples --encoding "utf-8" ..\tarqlerun.sparql .\50_review_sample.csv > 50_review_sample.nt
+..\tarql-1.2\bin\tarql --ntriples --encoding "utf-8" --dedup 1000000 ..\tarqlerun.sparql .\review_sample.csv > review_sample.nt
