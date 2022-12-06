@@ -70,7 +70,6 @@ CONSTRUCT {
 	            ex:helpful_votes     ?votes;
 	            schema:ratingCount   ?totalVotes;
 	            schema:headline      ?headline;
-	            schema:reviewBody    ?body;
 	            schema:datePublished ?date.
 }
 FROM <file:review_sample.csv>
@@ -79,10 +78,9 @@ WHERE {
 	BIND (IRI(CONCAT("http://example.org/review/",    ?review_id))   AS ?ReviewURI)
 	BIND (IRI(CONCAT("https://dbpedia.org/resource/", ?marketplace)) AS ?MarketplaceURI)
 
-	BIND (xsd:integer(?star_rating)     AS ?stars)
-	BIND (xsd:integer(?helpful_votes)   AS ?votes)
-	BIND (xsd:integer(?total_votes)     AS ?totalVotes)
+	BIND (xsd:decimal(?star_rating)     AS ?stars)
+	BIND (xsd:decimal(?helpful_votes)   AS ?votes)
+	BIND (xsd:decimal(?total_votes)     AS ?totalVotes)
 	BIND (xsd:string (?review_headline) AS ?headline)
-	BIND (xsd:string (?review_body)     AS ?body)
 	BIND (xsd:date   (?review_date)     AS ?date)
 }
