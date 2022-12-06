@@ -1,0 +1,37 @@
+prefix schema: <http://schema.org/>
+prefix xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+
+select ?name ?category ?date ?total_votes
+
+where {
+
+	?review ^schema:review        [ schema:name     ?name ;
+	                                schema:category ?category ] ;
+	         schema:ratingCount   ?total_votes ;
+	         schema:datePublished ?date .
+
+	{
+		select (year (?last_date) as ?last_year)
+		       (month(?last_date) as ?last_month)
+
+		where {
+			?last_date ^schema:datePublished [] .
+		}
+
+		order by desc(?last_date)
+
+		limit 1
+	}
+
+	bind (year (?date) as ?year)
+	bind (month(?date) as ?month)
+
+	filter((?last_year = ?year 	&& (?last_month = ?month || ?last_month = ?month + 1))
+	    || (?last_year = ?year + 1 && ?last_month = 1 && ?month = 12))
+}
+
+order by desc(xsd:decimal(?total_votes))
+         desc(?date)
+
+limit 20

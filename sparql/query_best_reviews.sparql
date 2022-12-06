@@ -1,0 +1,21 @@
+prefix schema: <http://schema.org/>
+prefix xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+
+select ?name ?category
+	(count(?review)            as ?count)
+	(avg(xsd:decimal(?rating)) as ?mean_rating)
+
+where {
+	?product schema:review      ?review ;
+	         schema:name        ?name ;
+	         schema:category    ?category .
+	?review  schema:ratingValue ?rating .
+}
+
+group by ?product ?name ?category
+
+order by desc(?count)
+         desc(?mean_rating)
+
+limit 20

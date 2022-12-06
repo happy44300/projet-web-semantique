@@ -1,0 +1,38 @@
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix owl:     <http://www.w3.org/2002/07/owl#>
+prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix schema:  <http://schema.org/>
+prefix void:    <http://rdfs.org/ns/void#>
+prefix :        <#>
+
+
+drop silent graph :ProductLinkset;
+
+create graph :ProductLinkset;
+
+
+insert data {
+	graph :ProductLinkset {
+		:ProductLinkset rdf:type            void:Linkset ;
+		                dcterms:title       "Amazon product linkset" ;
+		                dcterms:description "Liaisons entre produits et reviews Amazon" .
+	}
+};
+
+
+insert {
+	graph :ProductLinkset {
+		?amazonProduct owl:sameAs ?electronicProduct
+	}
+}
+
+where {
+	?amazonProduct rdf:type schema:Product .
+
+	bind (strafter(str(?amazonProduct), "product/") as ?id)
+
+	graph :Group8 {
+		?electronicProduct rdf:type    schema:Product ;
+		                   schema:asin ?id .
+	}
+};
